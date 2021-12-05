@@ -69,43 +69,97 @@
  *     where N is the number of different denominations of coins and K is the amount of change that we are trying to make. 
  *
  */
+
 public class DynamicProgrammingCoinChanging {
-	
+
 	// Dynamic programming algorithm to solve change-making problem.
-	// As a result, the coinUsed array is filled with the minimum number of coins needed for change from 0 -> maxChange
+	// As a result, the coinUsed array is filled with the minimum number of coins
+	// needed for change from 0 -> maxChange
 	// and lastCoin contains one of the coins needed to make the change.
 	public static void makeChange(int[] coins, int differentCoins, int maxChange, int[] coinsUsed, int[] lastCoin) {
-		
+
 		// 0 cents can be changed using zero coins
-		coinsUsed[ 0 ] = 0; lastCoin[ 0 ] = 1;
-		
+		coinsUsed[0] = 0;
+		lastCoin[0] = 1;
+
+		// macChange = 20
+		// int[] coins ={1, 5, 10}
+		// differentCoins = 3
+
+		// cents = 1 ~ 20
 		for (int cents = 1; cents <= maxChange; cents++) {
-			
+
 			int minCoins = cents;
 			int newCoin = 1;
-			
-			for(int j = 0; j < differentCoins; j++) {
-				
-				if(coins[j]>cents) // Cannot use coin j. // the amount of the coin is larger than the amount of change we are trying to make, there is nothing to do
+
+			// j = 0 ~ 2
+			for (int j = 0; j < differentCoins; j++) {
+
+				// coins[0] = 1
+				// 1>1
+
+				if (coins[j] > cents) // Cannot use coin j. // the amount of the coin is larger than the amount of
+										// change we are trying to make, there is nothing to do
 					continue;
-				
-				// if the number of coins used to solve the subproblem plus the one coin combine 
-				//  to be fewer than the minimum number of coins used,
-				//  then update the minCoins and newCoin
-				if(coinsUsed[cents - coins[j]] + 1 < minCoins) {
-					minCoins = coinsUsed[cents - coins[j]]+1;
+
+				// if the number of coins used to solve the subproblem plus the one coin combine
+				// to be fewer than the minimum number of coins used,
+				// then update the minCoins and newCoin
+				if (coinsUsed[cents - coins[j]] + 1 < minCoins) {
+					minCoins = coinsUsed[cents - coins[j]] + 1;
 					newCoin = coins[j];
-					
-				} 
+
+				}
 			}
 			coinsUsed[cents] = minCoins; // represents the minimum number of coins
 			lastCoin[cents] = newCoin; // which coin was last used to make the optimal change
 		}
-		
+
 	}
 
 	public static void main(String[] args) {
-		
+
+		// The coins and the total amount of change
+		int numCoins = 5;
+		int[] coins = { 1, 5, 10, 21, 25 };
+		int change = 0;
+
+		String a[] = { "59" };
+		/*
+		 * Best is 6 coins
+		 *  1
+		 *  1
+		 *  1
+		 *  10
+		 *  21
+		 *  25
+		 */
+
+		if (a.length == 0) {
+			System.out.println("Supply a monetary amount on the command line"); 
+			System.exit(0);
+		}
+
+		try {
+			change = Integer.parseInt(a[0]);
+		} catch (NumberFormatException e) {
+			System.out.println(e);
+			System.exit(0);
+		}
+		int[] used = new int[change + 1];
+		int[] last = new int[change + 1];
+
+		makeChange(coins, numCoins, change, used, last);
+
+		System.out.println("Best is " + used[change] + " coins");
+
+		for (int i = change; i > 0;) {
+
+			System.out.println(last[i] + " ");
+			i -= last[i];
+
+		}
+		System.out.println();
 
 	}
 
